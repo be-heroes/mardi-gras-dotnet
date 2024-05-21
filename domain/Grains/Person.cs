@@ -30,16 +30,19 @@ public class Person(ILogger<Person> logger) : IPerson
                 throw new ArgumentException("Invalid action type.");
         }
 
-        return new ValueTask<string>($"{Name} has {Energy} energy left after {ActionType.Eat}.");
+        return ValueTask.FromResult($"{Name} has {Energy} energy left after {action}.");
     }
 
-    ValueTask<bool> IPerson.Register(string name)
+    ValueTask<string> IPerson.GetName()
     {
-        Name = name;
+        return ValueTask.FromResult(Name);
+    }
 
-        _logger.LogInformation($"{Name} has been registered.");
+    Task IPerson.SetName(string value)
+    {
+        Name = value;
 
-        return new ValueTask<bool>(true);
+        return Task.CompletedTask;
     }
 
     void Eat()

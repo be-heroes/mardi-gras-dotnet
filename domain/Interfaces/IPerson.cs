@@ -6,5 +6,7 @@ public interface IPerson : IGrainWithIntegerKey
 {
     ValueTask<string> Do(ActionType action);
 
-    ValueTask<bool> Register(string name);
+    ValueTask<string> GetName();
+
+    Task SetName(string value);
 }

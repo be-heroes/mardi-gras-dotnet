@@ -17,29 +17,38 @@ await host.StartAsync();
 
 IClusterClient client = host.Services.GetRequiredService<IClusterClient>();
 
+IEvent @event = client.GetGrain<IEvent>(0);
+
+await @event.SetName("My Birthday Party");
+
 IPerson person = client.GetGrain<IPerson>(0);
 
-if(await person.Register("Tobias Andersen"))
-{
-    string response = await person.Do(Domain.Grains.ActionType.Drink);
+await person.SetName("Tobias Andersen");
 
-    try{
-        Console.WriteLine($"""{await person.Do(Domain.Grains.ActionType.Drink)}""");
-        Console.WriteLine($"""{await person.Do(Domain.Grains.ActionType.Party)}""");
-        Console.WriteLine($"""{await person.Do(Domain.Grains.ActionType.Drink)}""");
-        Console.WriteLine($"""{await person.Do(Domain.Grains.ActionType.Eat)}""");
-        Console.WriteLine($"""{await person.Do(Domain.Grains.ActionType.Party)}""");
-        Console.WriteLine($"""{await person.Do(Domain.Grains.ActionType.Party)}""");
-        Console.WriteLine($"""{await person.Do(Domain.Grains.ActionType.Party)}""");
+string response = await person.Do(Domain.Grains.ActionType.Drink);
 
-        // I will run out of energy here and need sleep :)
-        Console.WriteLine($"""{await person.Do(Domain.Grains.ActionType.Party)}""");
-    }
-    catch
-    {
-        Console.WriteLine($"""{await person.Do(Domain.Grains.ActionType.Sleep)}""");        
-    }
+try{
+    Console.WriteLine($"""{await person.Do(Domain.Grains.ActionType.Drink)}""");
+    Console.WriteLine($"""{await person.Do(Domain.Grains.ActionType.Party)}""");
+    Console.WriteLine($"""{await person.Do(Domain.Grains.ActionType.Drink)}""");
+    Console.WriteLine($"""{await person.Do(Domain.Grains.ActionType.Eat)}""");
+    Console.WriteLine($"""{await person.Do(Domain.Grains.ActionType.Party)}""");
+    Console.WriteLine($"""{await person.Do(Domain.Grains.ActionType.Drink)}""");
+    Console.WriteLine($"""{await person.Do(Domain.Grains.ActionType.Party)}""");
+    Console.WriteLine($"""{await person.Do(Domain.Grains.ActionType.Drink)}""");
+    Console.WriteLine($"""{await person.Do(Domain.Grains.ActionType.Party)}""");
+
+    // I will run out of energy here and need sleep :)
+    Console.WriteLine($"""{await person.Do(Domain.Grains.ActionType.Party)}""");
 }
+catch
+{
+    Console.WriteLine($"""{await person.Do(Domain.Grains.ActionType.Sleep)}""");        
+}
+
+await @event.AddAttendee(person);
+
+await @event.StartEvent();
 
 Console.ReadKey();
 

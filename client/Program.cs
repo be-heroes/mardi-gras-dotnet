@@ -13,13 +13,16 @@ IHostBuilder builder = Host.CreateDefaultBuilder(args)
     .UseConsoleLifetime();
 
 using IHost host = builder.Build();
+
+Console.WriteLine("Starting client");
+
 await host.StartAsync();
 
 IClusterClient client = host.Services.GetRequiredService<IClusterClient>();
 
 IEvent @event = client.GetGrain<IEvent>(0);
 
-await @event.SetName("My Birthday Party");
+await @event.SetNameAsync("My Birthday Party");
 
 IPerson person = client.GetGrain<IPerson>(0);
 
@@ -44,10 +47,11 @@ catch
     await person.SleepAsync();        
 }
 
-await @event.AddAttendee(person);
+await @event.AddAttendeeAsync(person);
 
-await @event.StartEvent();
+await @event.StartEventAsync();
 
+Console.WriteLine("Finished partying. Press any key to continue...");
 Console.ReadKey();
 
 await host.StopAsync();

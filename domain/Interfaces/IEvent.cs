@@ -1,12 +1,17 @@
 namespace Domain.Interfaces;
 
+[Alias("Domain.Interfaces.IEvent")]
 public interface IEvent : IGrainWithIntegerKey
 {
-    ValueTask<bool> AddAttendee(IPerson attendee);
+    [Alias("GetNameAsync")]
+    Task<string> GetNameAsync();
+    
+    [Alias("SetNameAsync")]
+    Task SetNameAsync(string name);
 
-    ValueTask<string> GetName();
-
-    Task SetName(string value);
-
-    Task StartEvent();
+    [Alias("AddAttendeeAsync")]
+    ValueTask<bool> AddAttendeeAsync(IPerson attendee);
+    
+    [Alias("StartEventAsync")]
+    Task StartEventAsync();
 }

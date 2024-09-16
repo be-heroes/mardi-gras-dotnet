@@ -2,42 +2,40 @@ using Domain.Interfaces;
 
 namespace Domain.Grains;
 
-public class Event(ILogger<Event> logger) : IEvent
+public class Event(ILogger<Event> logger) : Grain<EventGrainState>, IEvent
 {
     private readonly ILogger _logger = logger;
-
-    private readonly List<IPerson> _attendees = [];
-
-    public string Name { get; private set; } = string.Empty;
     
-    public IEnumerable<IPerson> Attendees => _attendees.AsReadOnly();
+    public IEnumerable<IPerson> Attendees => State.Attendees.AsReadOnly();
 
-    async ValueTask<bool> IEvent.AddAttendee(IPerson attendee)
+    public async ValueTask<bool> AddAttendeeAsync(IPerson attendee)
     {
-        _attendees.Add(attendee);
+        State.Attendees.Add(attendee);
+        
+        await WriteStateAsync();
 
-        _logger.LogInformation($"{await attendee.GetNameAsync()} has joined the event: {Name}");
+        _logger.LogInformation($"{await attendee.GetNameAsync()} has joined the event: {State.Name}");
 
         return true;
     }
 
-    ValueTask<string> IEvent.GetName()
+    public Task<string> GetNameAsync()
     {
-        return ValueTask.FromResult(Name);
+        return Task.FromResult(State.Name);
     }
 
-    Task IEvent.SetName(string value)
+    public async Task SetNameAsync(string value)
     {        
-        Name = value;
+        State.Name = value;
 
-        return Task.CompletedTask;
+        await WriteStateAsync();
     }
 
-    public async Task StartEvent()
+    public async Task StartEventAsync()
     {
-        _logger.LogInformation($"Event {Name} is starting!");
+        _logger.LogInformation($"Event {State.Name} is starting!");
 
-        foreach (var attendee in Attendees)
+        foreach (var attendee in State.Attendees)
         {
             await attendee.DrinkAsync();
 

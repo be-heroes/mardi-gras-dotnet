@@ -16,7 +16,7 @@ public class Event(ILogger<Event> logger) : IEvent
     {
         _attendees.Add(attendee);
 
-        _logger.LogInformation($"{await attendee.GetName()} has joined the event: {Name}");
+        _logger.LogInformation($"{await attendee.GetNameAsync()} has joined the event: {Name}");
 
         return true;
     }
@@ -33,15 +33,15 @@ public class Event(ILogger<Event> logger) : IEvent
         return Task.CompletedTask;
     }
 
-    public Task StartEvent()
+    public async Task StartEvent()
     {
         _logger.LogInformation($"Event {Name} is starting!");
 
         foreach (var attendee in Attendees)
         {
-            _logger.LogInformation($"{attendee.GetName()} is participating.");
-        }
+            await attendee.DrinkAsync();
 
-        return Task.CompletedTask;
+            _logger.LogInformation($"{await attendee.GetNameAsync()} had his welcome drink and is still sober.");
+        }
     }
 }

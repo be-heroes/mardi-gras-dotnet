@@ -23,27 +23,25 @@ await @event.SetName("My Birthday Party");
 
 IPerson person = client.GetGrain<IPerson>(0);
 
-await person.SetName("Tobias Andersen");
+await person.SetNameAsync("Tobias Andersen");
 
-string response = await person.Do(Domain.Grains.ActionType.Drink);
+await person.DrinkAsync();
 
-try{
-    Console.WriteLine($"""{await person.Do(Domain.Grains.ActionType.Drink)}""");
-    Console.WriteLine($"""{await person.Do(Domain.Grains.ActionType.Party)}""");
-    Console.WriteLine($"""{await person.Do(Domain.Grains.ActionType.Drink)}""");
-    Console.WriteLine($"""{await person.Do(Domain.Grains.ActionType.Eat)}""");
-    Console.WriteLine($"""{await person.Do(Domain.Grains.ActionType.Party)}""");
-    Console.WriteLine($"""{await person.Do(Domain.Grains.ActionType.Drink)}""");
-    Console.WriteLine($"""{await person.Do(Domain.Grains.ActionType.Party)}""");
-    Console.WriteLine($"""{await person.Do(Domain.Grains.ActionType.Drink)}""");
-    Console.WriteLine($"""{await person.Do(Domain.Grains.ActionType.Party)}""");
-
-    // I will run out of energy here and need sleep :)
-    Console.WriteLine($"""{await person.Do(Domain.Grains.ActionType.Party)}""");
+try {
+    await person.DrinkAsync();
+    await person.PartyAsync();
+    await person.DrinkAsync();
+    await person.EatAsync();
+    await person.PartyAsync();
+    await person.DrinkAsync();
+    await person.PartyAsync();
+    await person.DrinkAsync();
+    await person.PartyAsync();
+    await person.PartyAsync();
 }
 catch
 {
-    Console.WriteLine($"""{await person.Do(Domain.Grains.ActionType.Sleep)}""");        
+    await person.SleepAsync();        
 }
 
 await @event.AddAttendee(person);

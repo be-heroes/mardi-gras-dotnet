@@ -1,12 +1,32 @@
-using Domain.Grains;
-
 namespace Domain.Interfaces;
 
+[Alias("Domain.Interfaces.IPerson")]
 public interface IPerson : IGrainWithIntegerKey
 {
-    ValueTask<string> Do(ActionType action);
+    [Alias("GetNameAsync")]
+    Task<string> GetNameAsync();
+    
+    [Alias("SetNameAsync")]
+    Task SetNameAsync(string name);
 
-    ValueTask<string> GetName();
+    [Alias("EatAsync")]
+    Task EatAsync();
 
-    Task SetName(string value);
+    [Alias("DrinkAsync")]
+    Task DrinkAsync();
+
+    [Alias("PartyAsync")]
+    Task PartyAsync();
+
+    [Alias("SleepAsync")]
+    Task SleepAsync();
+
+    [Alias("GetStatusAsync")]
+    Task<string> GetStatusAsync();
+
+    [Alias("SubscribeToEventsAsync")]
+    Task SubscribeToEventsAsync();
+
+    [Alias("HandleEventAsync")]
+    Task HandleEventAsync(string eventMessage);
 }

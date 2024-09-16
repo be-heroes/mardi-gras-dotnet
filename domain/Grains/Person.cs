@@ -1,13 +1,12 @@
 using Domain.Interfaces;
 using Orleans.Streams;
-using Orleans.Streaming;
 
 namespace Domain.Grains;
 
 public class Person(ILogger<Person> logger) : Grain<PersonGrainState>, IPerson
 {
     private readonly ILogger<Person> _logger = logger;
-    private IAsyncStream<string> _eventStream;
+    private IAsyncStream<string> _eventStream = default!;
 
     public Task<string> GetNameAsync()
     {

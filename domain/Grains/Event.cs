@@ -35,11 +35,13 @@ public class Event(ILogger<Event> logger) : Grain<EventGrainState>, IEvent
     {
         _logger.LogInformation($"Event {State.Name} is starting!");
 
-        foreach (var attendee in State.Attendees)
+        var drinkTasks = State.Attendees.Select(async attendee =>
         {
             await attendee.DrinkAsync();
 
             _logger.LogInformation($"{await attendee.GetNameAsync()} had his welcome drink and is still sober.");
-        }
+        });
+
+        await Task.WhenAll(drinkTasks);
     }
 }
